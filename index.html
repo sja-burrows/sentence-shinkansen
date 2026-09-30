@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Sentence Shinkansen — Loose Tiles</title>
+<style>
+:root{--ink:#18262b;--teal:#88a8aa;--day:#ffe36b;--transport:#a9fb73;--place:#b9eef5;--verb:#ff7a24;--grammar:#d9c5f3}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:"教育体","Kyoiku Font","UD Digi Kyokasho NK-R","UD Digi Kyokasho N-R","UD Digi Kyokasho NP-R","Yu Kyokasho","YuKyo_Yoko",Meiryo,sans-serif;color:var(--ink);background:#f7faf9}
+body{display:grid;grid-template-rows:1fr auto}.topbar{grid-row:2;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:10px 16px;background:#fff;border-top:3px solid var(--teal);box-shadow:0 -3px 12px #0002;z-index:1000}
+h1{font-family:inherit;font-size:clamp(24px,3vw,43px);font-weight:600;color:#77999b;margin:0 auto 0 0}h1 em{font-weight:600}.hint{font-weight:650;color:#4b6367;font-size:14px}
+button{font:inherit;font-weight:750;border:2px solid #77999b;border-radius:10px;background:white;padding:8px 12px;color:#27484c;box-shadow:0 2px 0 #77999b;cursor:pointer}.danger{border-color:#ce6b59;color:#a64232;box-shadow:0 2px 0 #ce6b59}
+#board{grid-row:1;position:relative;overflow:hidden;touch-action:none;background-color:#fbfdfc;background-image:linear-gradient(#dce8e7 1px,transparent 1px),linear-gradient(90deg,#dce8e7 1px,transparent 1px);background-size:32px 32px}
+#board::after{content:"DRAG THE LOOSE TRAIN PIECES ANYWHERE";position:absolute;right:18px;bottom:12px;color:#789294;font-size:12px;font-weight:800;letter-spacing:.12em;pointer-events:none}
+.piece{position:absolute;width:clamp(112px,15.2vw,230px);height:116px;touch-action:none;user-select:none;cursor:grab;filter:drop-shadow(0 7px 4px #0003);z-index:2}.piece.dragging{cursor:grabbing;filter:drop-shadow(0 12px 7px #0004);z-index:999}
+.carriage{border:4px solid #282323;border-radius:15px 15px 9px 9px;background:#f5f5f2;padding:9px 10px 25px}.carriage::before,.carriage::after{content:"";position:absolute;bottom:3px;width:24px;height:24px;border:6px solid #292929;border-radius:50%;background:#747474;box-shadow:inset 0 0 0 4px #aaa}.carriage::before{left:24px}.carriage::after{right:24px}
+.coupler{position:absolute;right:-17px;top:55px;width:18px;height:10px;background:#333;border-radius:2px}.piece:not(.engine) .coupler.left{left:-17px;right:auto}.label{height:64px;border:2px solid #fff9;display:flex;align-items:center;justify-content:center;text-align:center;padding:3px 7px;font-size:clamp(20px,2.2vw,31px);font-weight:800;line-height:1.12;color:#111}
+.day{background:var(--day)}.transport{background:var(--transport)}.place{background:var(--place)}.verb{background:var(--verb)}.grammar{background:var(--grammar)}
+.label{white-space:nowrap;overflow:visible;overflow-wrap:normal;word-break:keep-all;flex-direction:column;gap:2px;min-width:0}.label .jp,.label .reading{display:block;flex:none;white-space:nowrap;line-height:1.1}.label .reading{order:-1;color:#263238;font-family:Arial,sans-serif;font-weight:700;font-size:17px}
+.engine{width:clamp(112px,15.2vw,230px);height:116px;background:#f7f7f4;border:4px solid #282323;border-radius:68% 17px 13px 20px;clip-path:polygon(0 67%,8% 43%,42% 11%,88% 11%,100% 48%,100% 100%,4% 100%)}.engine.nose-right{transform:scaleX(-1)}.engine .window{position:absolute;left:16%;top:35px;width:38%;height:18px;background:#9bd9f2;border:4px solid #292929;transform:skew(-26deg);border-radius:5px}.engine .stripe{position:absolute;left:7px;right:5px;top:72px;height:7px;background:#4389b7;border-block:3px solid #232323}.engine::before,.engine::after{content:"";position:absolute;bottom:2px;width:25px;height:25px;border:6px solid #292929;border-radius:50%;background:#777}.engine::before{left:24%}.engine::after{right:14%}.engine .door{position:absolute;right:15%;top:29px;width:22px;height:45px;border:4px solid #292929;border-radius:8px;background:#fff}.engine.nose-right .window,.engine.nose-right .stripe,.engine.nose-right .door{transform:scaleX(-1)}
+.remove{position:absolute;right:-9px;top:-9px;width:27px;height:27px;padding:0;border:2px solid #fff;border-radius:50%;background:#d75d4c;color:white;box-shadow:0 2px 4px #0005;font-size:17px;line-height:20px;display:none}.piece:hover .remove,.piece.selected .remove{display:block}
+.tray{position:absolute;left:14px;bottom:14px;width:250px;padding:10px;border:2px dashed #91aaab;border-radius:14px;background:#ffffffdd;z-index:900}.tray-title{font-size:13px;font-weight:850;color:#557477;margin-bottom:7px;text-align:center}.add-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.add-grid button{padding:6px;font-size:13px;box-shadow:none}.add-day{background:var(--day)}.add-transport{background:var(--transport)}.add-place{background:var(--place)}.add-verb{background:var(--verb)}.add-grammar{background:var(--grammar)}
+.piece.snapping{transition:left .28s ease,top .28s ease}.translation{position:absolute;left:50%;top:235px;transform:translateX(-50%);min-width:min(720px,82vw);padding:13px 20px;border:3px solid #88a8aa;border-radius:14px;background:#fff;box-shadow:0 5px 14px #0002;text-align:center;z-index:850;opacity:0;visibility:hidden;transition:opacity .2s ease}.translation.show{opacity:1;visibility:visible}.translation small{display:block;color:#607d80;font-weight:800;letter-spacing:.08em;margin-bottom:4px}.translation strong{font-size:clamp(20px,2.4vw,32px)}
+@media(max-width:720px){.hint{display:none}.topbar{padding:8px}.topbar button{padding:7px 9px}h1{font-size:24px}.piece{transform-origin:top left}.tray{width:215px}.add-grid button{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="topbar"><h1>The sentence <em>shinkansen</em></h1><span class="hint">Drag each carriage with your finger or mouse</span><button id="assemble">🚄 Assemble Train</button><button id="translate">🇬🇧 Translate to English</button><button id="random">🎲 Random Train</button><button id="reset">Reset layout</button><button id="clear" class="danger">Clear</button></header>
+<main id="board" aria-label="Free-moving sentence train workspace">
+  <div class="tray"><div class="tray-title">＋ ADD A LOOSE CARRIAGE</div><div class="add-grid"><button class="add-day" data-add="day">Day に</button><button class="add-transport" data-add="transport">Transport / あるいて</button><button class="add-place" data-add="place">Place に</button><button class="add-verb" data-add="verb">Verb</button></div></div>
+  <div id="translation" class="translation" aria-live="polite"><small>ENGLISH TRANSLATION</small><strong id="translationText"></strong></div>
+</main>
+<script>
+const board=document.querySelector('#board'),translation=document.querySelector('#translation'),translationText=document.querySelector('#translationText');let topZ=10;const lastAdded={};
+const choices={
+ day:[['月よう日に','月よう日 に'],['火よう日に','火よう日 に'],['水よう日に','水よう日 に'],['木よう日に','木よう日 に'],['金よう日に','金よう日 に'],['土よう日に','土よう日 に'],['日よう日に','日よう日 に']],
+ transport:[['ひこうきで','ひこうき で'],['くるまで','くるま で'],['じてんしゃで','じてんしゃ で'],['フェリーで','フェリー で'],['しんかんせんで','しんかんせん で'],['でんしゃで','でんしゃ で'],['バスで','バス で'],['あるいて','あるいて']],
+ place:[['ゆうえんちに','ゆうえんち に'],['はくぶつかんに','はくぶつかん に'],['くうこうに','くうこう に'],['レストランに','レストラン に'],['おしろに','おしろ に'],['じんじゃに','じんじゃ に'],['コンビニに','コンビニ に'],['えきに','えき に'],['ホテルに','ホテル に'],['おてらに','おてら に']],
+ verb:[['いきます。','いきます。'],['いきません。','いきません。'],['いきました。','いきました。'],['いきませんでした。','いきませんでした。']],
+ grammar:[['と','と'],['それから、','それから、']]
+};
+const romaji={
+ '月よう日に':'getsuyoubi ni','火よう日に':'kayoubi ni','水よう日に':'suiyoubi ni','木よう日に':'mokuyoubi ni','金よう日に':'kinyoubi ni','土よう日に':'doyoubi ni','日よう日に':'nichiyoubi ni',
+ 'ひこうきで':'hikouki de','くるまで':'kuruma de','じてんしゃで':'jitensha de','フェリーで':'ferii de','しんかんせんで':'shinkansen de','でんしゃで':'densha de','バスで':'basu de','あるいて':'aruite',
+ 'ゆうえんちに':'yuuenchi ni','はくぶつかんに':'hakubutsukan ni','くうこうに':'kuukou ni','レストランに':'resutoran ni','おしろに':'oshiro ni','じんじゃに':'jinja ni','コンビニに':'konbini ni','えきに':'eki ni','ホテルに':'hoteru ni','おてらに':'otera ni',
+ 'いきます。':'ikimasu','いきません。':'ikimasen','いきました。':'ikimashita','いきませんでした。':'ikimasen deshita'
+};
+const meanings={
+ '月よう日に':'Monday','火よう日に':'Tuesday','水よう日に':'Wednesday','木よう日に':'Thursday','金よう日に':'Friday','土よう日に':'Saturday','日よう日に':'Sunday',
+ 'でんしゃで':'by train','くるまで':'by car','ひこうきで':'by plane','じてんしゃで':'by bicycle','しんかんせんで':'by bullet train','バスで':'by bus','フェリーで':'by ferry','あるいて':'on foot',
+ 'はくぶつかんに':'the museum','えきに':'the station','くうこうに':'the airport','じんじゃに':'the shrine','おしろに':'the castle','ホテルに':'the hotel','コンビニに':'the convenience store','おてらに':'the temple','ゆうえんちに':'the amusement park','レストランに':'the restaurant',
+ 'いきます。':'will go','いきません。':'will not go','いきました。':'went','いきませんでした。':'did not go'
+};
+const defaults=[
+ {type:'engine',x:35,y:90},{type:'verb',x:650,y:90},{type:'engine-right',x:1270,y:90}
+];
+function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
+function fitLabel(label){
+ const available=label.clientWidth-16,canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+ for(const [line,initial] of [[label.querySelector('.jp'),27],[label.querySelector('.reading'),17]]){
+   const style=getComputedStyle(line);let size=initial;
+   do{ctx.font=`${style.fontWeight} ${size}px ${style.fontFamily}`;if(ctx.measureText(line.textContent).width<=available||size<=7)break;size-=.5}while(true);
+   line.style.fontSize=size+'px';
+ }
+}
+function setLabel(piece,index){
+ const option=choices[piece.dataset.type][index];piece.dataset.index=index;piece.dataset.value=option[0];
+ const label=piece.querySelector('.label');label.querySelector('.jp').textContent=option[1];label.querySelector('.reading').textContent=romaji[option[0]];
+ fitLabel(label);
+}
+function makePiece(type,x=300,y=380,index=0){
+ const piece=document.createElement('div');piece.className='piece';piece.dataset.type=type;
+ if(type.startsWith('engine')){piece.classList.add('engine');if(type==='engine-right')piece.classList.add('nose-right');piece.innerHTML='<span class="window"></span><span class="stripe"></span><span class="door"></span><span class="coupler"></span>'}
+ else{piece.classList.add('carriage');piece.innerHTML=`<div class="label ${type}"><span class="reading"></span><span class="jp"></span></div><span class="coupler left"></span><span class="coupler"></span>`}
+ piece.innerHTML+='<button class="remove" type="button" aria-label="Remove piece">×</button>';piece.style.left=x+'px';piece.style.top=y+'px';board.appendChild(piece);enableDrag(piece);
+ if(!type.startsWith('engine'))setLabel(piece,clamp(index,0,choices[type].length-1));
+ piece.querySelector('.remove').addEventListener('pointerdown',e=>e.stopPropagation());piece.querySelector('.remove').addEventListener('click',()=>{piece.remove();hideTranslation()});
+ piece.addEventListener('click',()=>{document.querySelectorAll('.piece.selected').forEach(p=>p.classList.remove('selected'));piece.classList.add('selected')});return piece;
+}
+function enableDrag(piece){let id=null,dx=0,dy=0,moved=false;
+ piece.addEventListener('pointerdown',e=>{if(e.target.closest('select,.remove'))return;hideTranslation();id=e.pointerId;moved=false;const r=piece.getBoundingClientRect(),b=board.getBoundingClientRect();dx=e.clientX-r.left;dy=e.clientY-r.top;piece.setPointerCapture(id);piece.classList.add('dragging');piece.style.zIndex=++topZ;e.preventDefault()});
+ piece.addEventListener('pointermove',e=>{if(e.pointerId!==id)return;moved=true;const b=board.getBoundingClientRect();piece.style.left=clamp(e.clientX-b.left-dx,0,board.clientWidth-piece.offsetWidth)+'px';piece.style.top=clamp(e.clientY-b.top-dy,0,board.clientHeight-piece.offsetHeight)+'px';e.preventDefault()});
+ const end=e=>{if(e.pointerId!==id)return;piece.classList.remove('dragging');if(piece.hasPointerCapture(id))piece.releasePointerCapture(id);id=null};piece.addEventListener('pointerup',end);piece.addEventListener('pointercancel',end)
+}
+function scaledDefaults(){const scale=Math.min(1,(board.clientWidth-30)/1515);return defaults.map(d=>({...d,x:Math.round(d.x*scale),y:d.y}))}
+function hideTranslation(){translation.classList.remove('show');translationText.textContent=''}
+function reset(){board.querySelectorAll('.piece').forEach(p=>p.remove());scaledDefaults().forEach(d=>makePiece(d.type,d.x,d.y,d.index||0));hideTranslation()}
+function differentRandom(length,current){if(length<2)return 0;let next;do{next=Math.floor(Math.random()*length)}while(next===current);return next}
+function orderedPieces(){const rank={engine:0,day:1,transport:2,place:3,verb:4,'engine-right':5};return[...board.querySelectorAll('.piece')].sort((a,b)=>(rank[a.dataset.type]??9)-(rank[b.dataset.type]??9)||parseFloat(a.style.left)-parseFloat(b.style.left))}
+function completeTrain(){return board.querySelector('.piece[data-type="engine"]')&&board.querySelector('.piece[data-type="engine-right"]')&&board.querySelector('.piece[data-type="verb"]')}
+function snapTrain(){hideTranslation();if(!completeTrain())return;const pieces=orderedPieces(),width=pieces[0].offsetWidth,available=board.clientWidth-28,gap=Math.min(-5,(available-width*pieces.length)/(pieces.length-1)),total=width*pieces.length+gap*(pieces.length-1),start=Math.max(14,(board.clientWidth-total)/2);pieces.forEach((piece,i)=>{piece.classList.add('snapping');piece.style.left=(start+i*(width+gap))+'px';piece.style.top='72px';setTimeout(()=>piece.classList.remove('snapping'),300)})}
+function joinEnglish(items){return items.length<2?items[0]||'':items.slice(0,-1).join(', ')+' and '+items[items.length-1]}
+function updateTranslation(){if(!completeTrain()){translation.classList.remove('show');translationText.textContent='';return}const vals=type=>[...board.querySelectorAll(`.piece[data-type="${type}"]`)].map(p=>meanings[p.dataset.value]).filter(Boolean),days=vals('day'),places=vals('place'),transport=vals('transport')[0],verb=vals('verb')[0]||'will go';let text='I '+verb+(places.length?' to '+joinEnglish(places):'')+(transport?' '+transport:'')+(days.length?' on '+joinEnglish(days):'')+'.';translationText.textContent=text;translation.classList.add('show')}
+function randomTrain(){
+ hideTranslation();
+ ['day','transport','place'].forEach(type=>{
+   let pieces=[...board.querySelectorAll(`.piece[data-type="${type}"]`)];
+   if(!pieces.length){const positions={day:[290,90],transport:[535,90],place:[780,90]};pieces=[makePiece(type,...positions[type])]}
+   pieces.forEach(piece=>{const index=differentRandom(choices[type].length,Number(piece.dataset.index));setLabel(piece,index)})
+ });
+ snapTrain();
+}
+document.querySelector('#assemble').addEventListener('click',snapTrain);document.querySelector('#translate').addEventListener('click',updateTranslation);document.querySelector('#random').addEventListener('click',randomTrain);document.querySelector('#reset').addEventListener('click',reset);document.querySelector('#clear').addEventListener('click',()=>{board.querySelectorAll('.piece').forEach(p=>p.remove());updateTranslation()});
+document.querySelectorAll('[data-add]').forEach(btn=>btn.addEventListener('click',()=>{hideTranslation();const type=btn.dataset.add,index=differentRandom(choices[type].length,lastAdded[type]??-1);lastAdded[type]=index;makePiece(type,Math.max(275,board.clientWidth/2-115),Math.max(40,board.clientHeight/2-58),index)}));
+board.addEventListener('pointerdown',e=>{if(e.target===board)document.querySelectorAll('.piece.selected').forEach(p=>p.classList.remove('selected'))});reset();
+window.addEventListener('resize',()=>board.querySelectorAll('.label').forEach(fitLabel));
+if(document.fonts)document.fonts.ready.then(()=>board.querySelectorAll('.label').forEach(fitLabel));
+</script>
+</body>
+</html>
