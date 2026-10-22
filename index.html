@@ -25,7 +25,7 @@ button{font:inherit;font-weight:750;border:2px solid #77999b;border-radius:10px;
 </style>
 </head>
 <body>
-<header class="topbar"><h1>The sentence <em>shinkansen</em></h1><span class="hint">Drag each carriage with your finger or mouse</span><button id="assemble">🚄 Assemble Train</button><button id="translate">🇬🇧 Translate to English</button><button id="random">🎲 Random Train</button><button id="reset">Reset layout</button><button id="clear" class="danger">Clear</button></header>
+<header class="topbar"><h1>The sentence <em>shinkansen</em></h1><span class="hint">Drag each carriage with your finger or mouse</span><button id="assemble">🚄 Assemble Train</button><button id="translate">🇬🇧 Translate to English</button><button id="random">🎲 Random Train</button><button id="clear" class="danger">Clear</button></header>
 <main id="board" aria-label="Free-moving sentence train workspace">
   <div class="tray"><div class="tray-title">＋ ADD ONE OF EACH CARRIAGE</div><div class="add-grid"><button class="add-day" data-add="day">Day に</button><button class="add-transport" data-add="transport">Transport / あるいて</button><button class="add-place" data-add="place">Place に</button><button class="add-verb" data-add="verb">Verb</button></div></div>
   <div id="translation" class="translation" aria-live="polite"><small>ENGLISH TRANSLATION</small><strong id="translationText"></strong></div>
@@ -100,7 +100,7 @@ function randomTrain(){
  });
  snapTrain();
 }
-document.querySelector('#assemble').addEventListener('click',snapTrain);document.querySelector('#translate').addEventListener('click',updateTranslation);document.querySelector('#random').addEventListener('click',randomTrain);document.querySelector('#reset').addEventListener('click',reset);document.querySelector('#clear').addEventListener('click',()=>{board.querySelectorAll('.piece').forEach(p=>p.remove());updateTranslation()});
+document.querySelector('#assemble').addEventListener('click',snapTrain);document.querySelector('#translate').addEventListener('click',updateTranslation);document.querySelector('#random').addEventListener('click',randomTrain);document.querySelector('#clear').addEventListener('click',reset);
 // One carriage per word category. To change a word, remove its carriage first.
 function refreshAddButtons(){
  document.querySelectorAll('[data-add]').forEach(btn=>{
