@@ -5,8 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Sentence Shinkansen — Loose Tiles</title>
 <style>
+/* Klee One SemiBold: place the font file beside index.html on GitHub Pages. */
+@font-face {
+  font-family: "Klee One Local";
+  src: url("./KleeOne-SemiBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+}
+
 :root{--ink:#18262b;--teal:#88a8aa;--day:#ffe36b;--transport:#a9fb73;--place:#b9eef5;--verb:#ff7a24;--grammar:#d9c5f3}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:"教育体","Kyoiku Font","UD Digi Kyokasho NK-R","UD Digi Kyokasho N-R","UD Digi Kyokasho NP-R","Yu Kyokasho","YuKyo_Yoko",Meiryo,sans-serif;color:var(--ink);background:#f7faf9}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:"Klee One Local","教育体","Kyoiku Font","UD Digi Kyokasho NK-R","UD Digi Kyokasho N-R","UD Digi Kyokasho NP-R","Yu Kyokasho","YuKyo_Yoko",Meiryo,sans-serif;color:var(--ink);background:#f7faf9}
 body{display:grid;grid-template-rows:1fr auto}.topbar{grid-row:2;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:10px 16px;background:#fff;border-top:3px solid var(--teal);box-shadow:0 -3px 12px #0002;z-index:1000}
 h1{font-family:inherit;font-size:clamp(24px,3vw,43px);font-weight:600;color:#77999b;margin:0 auto 0 0}h1 em{font-weight:600}.hint{font-weight:650;color:#4b6367;font-size:14px}
 button{font:inherit;font-weight:750;border:2px solid #77999b;border-radius:10px;background:white;padding:8px 12px;color:#27484c;box-shadow:0 2px 0 #77999b;cursor:pointer}.danger{border-color:#ce6b59;color:#a64232;box-shadow:0 2px 0 #ce6b59}
@@ -16,7 +25,7 @@ button{font:inherit;font-weight:750;border:2px solid #77999b;border-radius:10px;
 .carriage{border:4px solid #282323;border-radius:15px 15px 9px 9px;background:#f5f5f2;padding:9px 10px 25px}.carriage::before,.carriage::after{content:"";position:absolute;bottom:3px;width:24px;height:24px;border:6px solid #292929;border-radius:50%;background:#747474;box-shadow:inset 0 0 0 4px #aaa}.carriage::before{left:24px}.carriage::after{right:24px}
 .coupler{position:absolute;right:-17px;top:55px;width:18px;height:10px;background:#333;border-radius:2px}.piece:not(.engine) .coupler.left{left:-17px;right:auto}.label{height:64px;border:2px solid #fff9;display:flex;align-items:center;justify-content:center;text-align:center;padding:3px 7px;font-size:clamp(20px,2.2vw,31px);font-weight:800;line-height:1.12;color:#111}
 .day{background:var(--day)}.transport{background:var(--transport)}.place{background:var(--place)}.verb{background:var(--verb)}.grammar{background:var(--grammar)}
-.label{white-space:nowrap;overflow:visible;overflow-wrap:normal;word-break:keep-all;flex-direction:column;gap:2px;min-width:0}.label .jp,.label .reading{display:block;flex:none;white-space:nowrap;line-height:1.1}.label .reading{order:-1;color:#263238;font-family:Arial,sans-serif;font-weight:700;font-size:17px}
+.label{white-space:nowrap;overflow:visible;overflow-wrap:normal;word-break:keep-all;flex-direction:column;gap:2px;min-width:0}.label .jp,.label .reading{display:block;flex:none;white-space:nowrap;line-height:1.1}.label .jp{font-family:"Klee One Local","教育体","Yu Kyokasho",sans-serif}.label .reading{order:-1;color:#263238;font-family:Arial,sans-serif;font-weight:700;font-size:17px}
 .engine{width:clamp(112px,15.2vw,230px);height:116px;background:#f7f7f4;border:4px solid #282323;border-radius:68% 17px 13px 20px;clip-path:polygon(0 67%,8% 43%,42% 11%,88% 11%,100% 48%,100% 100%,4% 100%)}.engine.nose-right{transform:scaleX(-1)}.engine .window{position:absolute;left:16%;top:35px;width:38%;height:18px;background:#9bd9f2;border:4px solid #292929;transform:skew(-26deg);border-radius:5px}.engine .stripe{position:absolute;left:7px;right:5px;top:72px;height:7px;background:#4389b7;border-block:3px solid #232323}.engine::before,.engine::after{content:"";position:absolute;bottom:2px;width:25px;height:25px;border:6px solid #292929;border-radius:50%;background:#777}.engine::before{left:24%}.engine::after{right:14%}.engine .door{position:absolute;right:15%;top:29px;width:22px;height:45px;border:4px solid #292929;border-radius:8px;background:#fff}.engine.nose-right .window,.engine.nose-right .stripe,.engine.nose-right .door{transform:scaleX(-1)}
 .remove{position:absolute;right:-9px;top:-9px;width:27px;height:27px;padding:0;border:2px solid #fff;border-radius:50%;background:#d75d4c;color:white;box-shadow:0 2px 4px #0005;font-size:17px;line-height:20px;display:none}.piece:hover .remove,.piece.selected .remove{display:block}
 .tray{position:absolute;left:14px;bottom:14px;width:250px;padding:10px;border:2px dashed #91aaab;border-radius:14px;background:#ffffffdd;z-index:900}.tray-title{font-size:13px;font-weight:850;color:#557477;margin-bottom:7px;text-align:center}.add-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.add-grid button{padding:6px;font-size:13px;box-shadow:none}.add-grid button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}.add-day{background:var(--day)}.add-transport{background:var(--transport)}.add-place{background:var(--place)}.add-verb{background:var(--verb)}.add-grammar{background:var(--grammar)}
